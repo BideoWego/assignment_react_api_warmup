@@ -4,6 +4,7 @@ import Jumbotron from './Jumbotron';
 import UserForm from './UserForm';
 import serialize from 'form-serialize';
 import { default as _ } from 'lodash';
+import 'whatwg-fetch';
 
 
 class App extends Component {
@@ -16,7 +17,8 @@ class App extends Component {
       data: {
         first_name: '',
         last_name: '',
-        avatar: ''
+        avatar: '',
+        id: ''
       }
     };
 
@@ -71,6 +73,7 @@ class App extends Component {
       })
       .then((json) => {
         let users = this.state.users;
+        json.id = +json.id;
         if (id) {
           let index = _.findIndex(users, (user) => user.id === id);
           users[index] = {
@@ -89,7 +92,8 @@ class App extends Component {
           data: {
             first_name: '',
             last_name: '',
-            avatar: ''
+            avatar: '',
+            id: ''
           }
         }, () => form.reset());
       })
@@ -165,7 +169,7 @@ class App extends Component {
           users={ users }
           isLoading={ isLoading } />
 
-        <UserForm data={ data } onSubmit={ this.onCreateOrUpdateUser } error={ error } />
+        <UserForm user={ data } onSubmit={ this.onCreateOrUpdateUser } error={ error } />
       </main>
     );
   }
