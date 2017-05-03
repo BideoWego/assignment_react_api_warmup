@@ -12,9 +12,12 @@ const UserForm = (props) => {
     onSubmit
   } = props;
 
+  const title = props.data.id ? 'Edit User' : 'Add User';
+  const data = props.data || {};
+
   return (
     <form className="container" onSubmit={ onSubmit }>
-      <h1>Add New User</h1>
+      <h1>{ title }</h1>
 
       <Showable show={ error }>
         <Alert type="danger">
@@ -22,22 +25,24 @@ const UserForm = (props) => {
         </Alert>
       </Showable>
 
-      <InputGroup  
-        name="first_name"
-        labelText="First Name">
-        <Input name="first_name" />
-      </InputGroup>
+      <Input type="hidden" value={ data.id } name="id" />
 
       <InputGroup  
         name="first_name"
         labelText="First Name">
-        <Input name="first_name" />
+        <Input name="first_name" defaultValue={ data.first_name } />
+      </InputGroup>
+
+      <InputGroup  
+        name="last_name"
+        labelText="Last Name">
+        <Input name="last_name" defaultValue={ data.last_name } />
       </InputGroup>
 
       <InputGroup  
         name="avatar"
         labelText="Photo Link">
-        <Input name="avatar" />
+        <Input name="avatar" defaultValue={ data.avatar } />
       </InputGroup>
 
       <Button type="submit" color="primary">

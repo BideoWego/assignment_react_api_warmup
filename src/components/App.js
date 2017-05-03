@@ -12,11 +12,17 @@ class App extends Component {
 
     this.state = {
       users: [],
-      isLoading: false
+      isLoading: false,
+      data: {
+        first_name: '',
+        last_name: '',
+        avatar: ''
+      }
     };
 
-    this.onAddUser = this.onAddUser.bind(this);
+    this.onCreateOrUpdateUser = this.onCreateOrUpdateUser.bind(this);
     this.onDeleteUser = this.onDeleteUser.bind(this);
+    this.onEditUser = this.onEditUser.bind(this);
   }
 
 
@@ -34,7 +40,7 @@ class App extends Component {
   }
 
 
-  onAddUser(e) {
+  onCreateOrUpdateUser(e) {
     e.preventDefault();
 
     const form = e.target;
@@ -43,15 +49,20 @@ class App extends Component {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
+    const id = +body.id;
+    const method = id ? 'PUT' : 'POST';
+    let url = 'https://reqres.in/api/users';
+    url += id ? `/${ id }` : '';
+
     const options = {
       headers,
-      method: 'POST',
+      method,
       body: JSON.stringify(body)
     };
 
     this.setState({ isLoading: true });
 
-    fetch('https://reqres.in/api/users', options)
+    fetch(url, options)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`${ response.status } ${ response.statusText }`);
@@ -59,17 +70,27 @@ class App extends Component {
         return response.json();
       })
       .then((json) => {
+        let users = this.state.users;
+        if (id) {
+          let index = _.findIndex(users, (user) => user.id === id);
+          users[index] = {
+            id: json.id,
+            first_name: json.first_name,
+            last_name: json.last_name,
+            avatar: json.avatar
+          };
+        } else {
+          users.push(json);
+        }
+
         this.setState({
           isLoading: false,
-          users: [
-            ...this.state.users,
-            {
-              id: +json.id,
-              first_name: json.first_name[0],
-              last_name: json.first_name[1],
-              avatar: json.avatar
-            }
-          ]
+          users: users,
+          data: {
+            first_name: '',
+            last_name: '',
+            avatar: ''
+          }
         }, () => form.reset());
       })
       .catch((error) => {
@@ -80,6 +101,15 @@ class App extends Component {
         });
       });
 
+    return false;
+  }
+
+
+  onEditUser(e) {
+    e.preventDefault();
+    const id = +e.target.getAttribute('data-id');
+    const user = _.find(this.state.users, (user) => user.id === id);
+    this.setState({ data: user });
     return false;
   }
 
@@ -97,11 +127,9 @@ class App extends Component {
         if (!response.ok) {
           throw new Error(`${ response.status } ${ response.statusText }`);
         }
-        console.log(response);
       })
       .then(() => {
         let users = this.state.users;
-        console.log(id, users);
         _.remove(users, (user) => user.id === id);
         this.setState({ users });
       })
@@ -113,9 +141,6 @@ class App extends Component {
         });
       });
 
-
-    console.log('Deleting...', e.target);
-
     return false;
   }
 
@@ -124,7 +149,8 @@ class App extends Component {
     const {
       users,
       isLoading,
-      error
+      error,
+      data
     } = this.state;
 
     return (
@@ -134,15 +160,19 @@ class App extends Component {
           tagline="Cruding users" />
         
         <UserList
+          onEdit={ this.onEditUser }
           onDelete={ this.onDeleteUser }
           users={ users }
           isLoading={ isLoading } />
 
-        <UserForm onSubmit={ this.onAddUser } error={ error } />
+        <UserForm data={ data } onSubmit={ this.onCreateOrUpdateUser } error={ error } />
       </main>
     );
   }
 }
+
+
+
 
 export default App;
 

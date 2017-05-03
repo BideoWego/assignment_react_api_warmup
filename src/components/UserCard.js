@@ -5,7 +5,8 @@ import React from 'react';
 const UserCard = (props) => {
   const {
     user,
-    onDelete
+    onDelete,
+    onEdit
   } = props;
 
   const {
@@ -31,11 +32,20 @@ const UserCard = (props) => {
 
       <div className="card-block">
         <h4>{ first_name } { last_name }</h4>
-        <a
-          href="#"
-          className="text-danger"
-          onClick={ onDelete }
-          data-id={ id }>&times;</a>
+        <p>
+          <a
+            href="#"
+            className="text-primary"
+            onClick={ onEdit }
+            data-id={ id }>Edit</a>
+        </p>
+        <p>
+          <a
+            href="#"
+            className="text-danger"
+            onClick={ onDelete }
+            data-id={ id }>Delete</a>
+        </p>
       </div>
     </div>
   );

@@ -2,10 +2,14 @@ import React from 'react';
 
 
 const Input = (props) => {
-  const classNames = `form-control ${ props.className }`;
+  const classNames = `form-control ${ props.className ? props.className : '' }`;
+  const {
+    value,
+    ...otherProps
+  } = props;
 
   return (
-    <input className={ classNames } { ...props } />
+    <input className={ classNames } defaultValue={ value } { ...otherProps } />
   );
 };
 

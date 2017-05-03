@@ -8,7 +8,8 @@ const UserList = (props) => {
   const {
     users,
     isLoading,
-    onDelete
+    onDelete,
+    onEdit
   } = props;
 
   const usersList = users.map((user) => {
@@ -16,7 +17,8 @@ const UserList = (props) => {
       <UserCard
         user={ user }
         key={ user.id }
-        onDelete={ onDelete } />
+        onDelete={ onDelete }
+        onEdit={ onEdit } />
     );
   });
 
