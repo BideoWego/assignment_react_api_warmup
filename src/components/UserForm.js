@@ -41,8 +41,6 @@ class UserForm extends React.Component {
   render() {
     const title = this.state.id ? 'Edit User' : 'Add User';
 
-    console.log(this.state);
-
     return (
       <form className="container" onSubmit={ this.props.onSubmit }>
         <h1>{ title }</h1>
